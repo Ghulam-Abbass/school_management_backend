@@ -135,3 +135,62 @@ async def show_user_profile(
         "data": data 
     }
     return response
+
+
+@auth.post("/api/user/{user_id}")
+async def update_user(
+    user_id: int,
+    first_name: str = _fastapi.Form("", description="Enter first_name"),
+    last_name: str = _fastapi.Form("", description="Enter last_name"),
+    phone: str = _fastapi.Form("", description="Enter phone"),
+    address: str = _fastapi.Form("", description="Enter address"),
+    auth: User = _fastapi.Depends(_authservices.get_current_user),
+    db: Session = _fastapi.Depends(_authservices.get_db)
+):
+    user = await _authservices.get_user_by_id(db, user_id)
+    
+    if user is None:
+        response = {
+            "success": False,
+            "message": "User not found",
+            "data": None
+        }
+        return JSONResponse(status_code=404, content=response)
+    
+    if auth == "Invalid email or password":
+        return _functions.create_error_response("Invalid email or password")
+
+    if auth == "Unauthorized: Token has expired":
+        return _functions.create_error_response("Unauthorized: Token has expired")
+
+    if auth == "Unauthorized: Token is invalid":
+        return _functions.create_error_response("Unauthorized: Token is invalid")
+    
+    # Handle image upload if provided
+    # image_url = None
+    # if image:
+    #     image_url = await _functions.upload_image(image)
+
+    updated_user = _authservices.update_profile(db, user_id, first_name, last_name, phone, address)
+    if updated_user is None:
+        response = {
+            "success": False,
+            "message": "Something went wrong.",
+            "data": None
+        }
+        return JSONResponse(status_code=404, content=response)
+    
+    if update_user == "Image required":
+        response = {
+            "success": False,
+            "message": "Image required",
+            "data": None
+        }
+        return JSONResponse(status_code=403, content=response)
+
+    response = {
+        "success": True,
+        "message": "User updated.",
+        "data": updated_user
+    }
+    return response

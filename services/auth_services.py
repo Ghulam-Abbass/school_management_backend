@@ -144,3 +144,64 @@ async def get_user_by_id(db: Session, user_id: int):
     
     return user
 
+def update_profile(
+    db: Session, 
+    user_id: int, 
+    first_name: str, 
+    last_name: str, 
+    phone: str, 
+    address: str
+):
+    user = db.query(_models.User).filter(_models.User.id == user_id).first()
+
+    if user is None:
+        return None
+
+
+    if first_name:
+        setattr(user, "first_name", first_name)
+    if last_name:
+        setattr(user, "last_name", last_name)
+    if phone:
+        setattr(user, "phone", phone)
+    if address:
+        setattr(user, "address", address)
+    # if image_url:
+    #     setattr(user, "image", image_url)
+
+    # Set the updated_at timestamp
+    setattr(user, "updated_at", datetime.utcnow())
+
+    # Commit changes to the database
+    db.commit()
+    db.refresh(user)
+
+    # Return updated user data
+    user_data = {
+        "id": user.id,
+        "first_name": user.first_name,
+        "last_name": user.last_name,
+        "email": user.email,
+        "address": user.address,
+        "phone": user.phone,
+        "role": user.role,
+        "created_at": user.created_at.isoformat() if user.created_at else None,
+        "updated_at": user.updated_at.isoformat() if user.updated_at else None
+    }
+    
+    return user_data
+
+
+async def get_current_user(token=_fastapi.Depends(auth_scheme), db=_fastapi.Depends(get_db)):
+    try:
+        payload = jwt.decode(token, _JWT_SECRET, algorithms=["HS256"])
+        user = await get_user_by_id(user_id=payload["id"], db=db)
+        if not user:
+            return "Invalid email or password" 
+        
+        return user
+    except jwt.ExpiredSignatureError:
+        return "Unauthorized: Token has expired"
+    except jwt.InvalidTokenError:
+        return "Unauthorized: Token is invalid"
+
