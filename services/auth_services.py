@@ -68,3 +68,41 @@ async def signup_user():
             "data": None
         }
     return JSONResponse(status_code=201, content=response)
+
+async def authenticate_user(email: str, password: str, db=_orm.Session):
+    user = await get_user_by_email(email=email, db=db)
+    if not user:
+        return None
+    if not _hash.bcrypt.verify(password, user.password):
+        return "wrong password"
+    
+    return user
+
+async def create_token_login(user: _models.User):
+    user_schema_obj = _schemas.UserSignin.from_orm(user)
+    user_dict = user_schema_obj.dict()
+
+    token_expiration = _dt.datetime.utcnow() + _dt.timedelta(days=1)
+
+    token = jwt.encode(user_dict, _JWT_SECRET, json_encoder=CustomJSONEncoder)
+    response = {
+        "success": True,
+        "message": "User Login Successfully.",
+        "data":
+            {
+                "id": user.id,
+                "first_name": user.first_name,
+                "last_name": user.last_name,
+                "email": user.email,
+                "address": user.address,
+                "phone": user.phone,
+                "access_token": token,
+                "token_type": "Bearer",
+                "expires_in": token_expiration.isoformat(),
+                "role": user.role,
+                "created_at": user.created_at,
+                "updated_at": user.updated_at
+            }
+        }
+    return response
+

@@ -88,3 +88,28 @@ async def signup_user(
     user = await _authservices.create_user_db(firstName=first_name, lastName=last_name, address=address, phone=phone, email=email, password=password, role=role, db=db)
 
     return await _authservices.signup_user()
+
+@auth.post("/auth/signin")
+async def signin_user(
+    email: str = _fastapi.Form(..., description="Enter email"),
+    password: str = _fastapi.Form(..., description="Enter password"),
+    db : Session = _fastapi.Depends(_authservices.get_db)
+ ):
+    user = await _authservices.authenticate_user(email=email, password=password, db=db)
+    
+    if not user:
+        response = {
+            "success": False,
+            "message": "Invalid Credentials",
+            "data": None
+        }
+        return JSONResponse(status_code=401, content=response)
+    if user == "wrong password":
+        response = {
+            "success": False,
+            "message": "Wrong Password",
+            "data": None
+        }
+        raise JSONResponse(status_code=401, detail=response)
+    
+    return await _authservices.create_token_login(user=user)
