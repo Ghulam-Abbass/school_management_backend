@@ -6,6 +6,7 @@ import logging
 from models.User import User
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
+import utils.functions as _functions
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -113,3 +114,24 @@ async def signin_user(
         raise JSONResponse(status_code=401, detail=response)
     
     return await _authservices.create_token_login(user=user)
+
+
+@auth.get("/auth/profile")
+async def show_user_profile(
+    data: _authschema.UserSignin = _fastapi.Depends(_authservices.get_user)
+):
+    if data == "Invalid email or password":
+        return _functions.create_error_response("Invalid email or password")
+
+    if data == "Unauthorized: Token has expired":
+        return _functions.create_error_response("Unauthorized: Token has expired")
+
+    if data == "Unauthorized: Token is invalid":
+        return _functions.create_error_response("Unauthorized: Token is invalid")
+    
+    response = {
+        "success": True,
+        "message": "User Profile.",
+        "data": data 
+    }
+    return response

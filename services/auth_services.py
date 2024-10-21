@@ -106,3 +106,41 @@ async def create_token_login(user: _models.User):
         }
     return response
 
+async def get_user(token=_fastapi.Depends(auth_scheme), db=_fastapi.Depends(get_db)):
+
+    try:
+        payload = jwt.decode(token, _JWT_SECRET, algorithms=["HS256"])
+        user = await get_user_by_id(user_id=payload["id"], db=db)
+        if not user:
+            return "Invalid email or password"          
+        print("User data attributes:", user)
+        # Prepare the response
+        user_data = {
+            "id": user.id,
+            "first_name": user.first_name,
+            "last_name": user.last_name,
+            "email": user.email,
+            "address": user.address,
+            "phone": user.phone,
+            "role": user.role,
+            "created_at": user.created_at.isoformat() if user.created_at else None,
+            "updated_at": user.updated_at.isoformat() if user.updated_at else None
+        }
+        
+        return user_data
+    except jwt.ExpiredSignatureError:
+        return "Unauthorized: Token has expired"
+    except jwt.InvalidTokenError:
+        return "Unauthorized: Token is invalid" 
+ 
+
+ # view user
+
+async def get_user_by_id(db: Session, user_id: int):
+    user = db.query(_models.User).filter(_models.User.id == user_id).first()
+    
+    if not user:
+        return None
+    
+    return user
+
