@@ -194,3 +194,21 @@ async def update_user(
         "data": updated_user
     }
     return response
+
+@auth.post("/api/logout")
+async def user_logout(token: str = _fastapi.Depends(_authservices.auth_scheme)):
+    data = await _authservices.logout_user(token)
+    if data == "Unauthorized: Token has expired" or data == "Unauthorized: Invalid token":
+        response = {
+            "success": False,
+            "message": data,
+            "data": None
+        }
+        return JSONResponse(status_code=403, content=response)
+
+    response = {
+        "success" : True,
+        "message" : data,
+        "data": None
+    }
+    return response

@@ -204,4 +204,15 @@ async def get_current_user(token=_fastapi.Depends(auth_scheme), db=_fastapi.Depe
         return "Unauthorized: Token has expired"
     except jwt.InvalidTokenError:
         return "Unauthorized: Token is invalid"
+    
+
+async def logout_user(token: str):
+    try:
+        jwt.decode(token, _JWT_SECRET, algorithms=["HS256"])
+        return "User Logout Successfully."
+    except jwt.ExpiredSignatureError:
+        return "Unauthorized: Token has expired"
+    except jwt.InvalidTokenError:
+        return "Unauthorized: Invalid token"
+  
 
