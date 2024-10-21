@@ -1,29 +1,27 @@
-from fastapi import FastAPI, Depends, HTTPException
-from sqlalchemy.orm import Session
-from db.database import get_db
-from sqlalchemy import text 
+from fastapi import FastAPI
+import routes.auth_route as _auth
+from fastapi.middleware.cors import CORSMiddleware
 
-app = FastAPI()
 
-@app.get("/check-db")
-async def check_db_connection(db: Session = Depends(get_db)):
-    try:
-        # Run a simple SQL query to check the connection using text() function
-        db.execute(text("SELECT 1"))
-        return {"status": "Database connection successful!"}
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Database connection failed: {str(e)}")
 
-# Test client
-from fastapi.testclient import TestClient
+app = FastAPI(
+        debug=True,
+        title= "School Management System",
+        openapi_url="/openapi.json"
+    )
 
-client = TestClient(app)
 
-# Test client
-from fastapi.testclient import TestClient
+origins = [
+    "http://localhost:8080",
+    "*"
+]
 
-client = TestClient(app)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
-@app.get("/")
-async def read_main():
-    return {"msg": "Hello World"}
+app.include_router(_auth.auth, tags=["Authentication"])
