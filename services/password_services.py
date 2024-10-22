@@ -23,3 +23,10 @@ def initiate_password_reset(email: str, db: Session, background_tasks: _fastapi.
 
         return "Code successfully sent to your email."
     return "User not found"
+
+def check_code_valid(code: str, db: Session):
+    reset_request = db.query(_password.PasswordReset).filter(
+        _password.PasswordReset.code == code,
+        _password.PasswordReset.expiry_date >= datetime.now()
+    ).first()
+    return reset_request is not None

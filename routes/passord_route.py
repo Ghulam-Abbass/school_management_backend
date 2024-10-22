@@ -29,3 +29,18 @@ def forgot_password(
         "message": response,
         "data": None
     }
+
+@psw.get("/api/verify-code/")
+def verify_code(token: str, db: Session = _fastapi.Depends(_authservices.get_db)):
+    response = _pwdservices.check_code_valid(token, db)
+    if response == False:
+        return {
+            "success": response,
+            "messages": "Not Matched",
+            "data": None
+        }
+    return {
+        "success": response,
+            "messages": "Matched Successfully.",
+            "data": None
+    }
