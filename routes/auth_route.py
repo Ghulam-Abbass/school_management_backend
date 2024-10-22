@@ -111,7 +111,7 @@ async def signin_user(
             "message": "Wrong Password",
             "data": None
         }
-        raise JSONResponse(status_code=401, detail=response)
+        return JSONResponse(status_code=401, content=response)
     
     return await _authservices.create_token_login(user=user)
 

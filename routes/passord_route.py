@@ -36,11 +36,33 @@ def verify_code(token: str, db: Session = _fastapi.Depends(_authservices.get_db)
     if response == False:
         return {
             "success": response,
-            "messages": "Not Matched",
+            "message": "Not Matched",
             "data": None
         }
     return {
         "success": response,
-            "messages": "Matched Successfully.",
+            "message": "Matched Successfully.",
             "data": None
+    }
+
+@psw.post("/api/reset-password/")
+def reset_password(
+    code: str = _fastapi.Form(..., description="Enter code"),
+    new_password: str = _fastapi.Form(..., description="Enter new password"),
+    confirm_password: str = _fastapi.Form(..., description="Enter confirm password"),
+    db: Session = _fastapi.Depends(_authservices.get_db)
+):
+    if new_password != confirm_password:
+        response = {
+            "success": False,
+            "message": "Password not match",
+            "data": None
+        }
+        return response
+
+    data = _pwdservices.password_reset(code, new_password, db)
+    return {
+        "success": True,
+        "message": data,
+        "data": None
     }

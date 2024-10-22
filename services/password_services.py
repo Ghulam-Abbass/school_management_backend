@@ -2,9 +2,8 @@ import models.User as _user
 import fastapi as _fastapi
 from sqlalchemy.orm import Session
 from datetime import datetime, timedelta
-from random import choice
-from string import ascii_letters, digits
 import models.PasswordReset as _password
+import passlib.hash as _hash
 from config.smtplib import send_reset_password_email
 import random
 
@@ -30,3 +29,18 @@ def check_code_valid(code: str, db: Session):
         _password.PasswordReset.expiry_date >= datetime.now()
     ).first()
     return reset_request is not None
+
+def password_reset(code: str, new_password: str, db: Session):
+    reset_request = db.query( _password.PasswordReset).filter(
+         _password.PasswordReset.code == code,
+         _password.PasswordReset.expiry_date >= datetime.now()
+    ).first()
+    if reset_request:
+        hash_password = _hash.bcrypt.hash(new_password)
+        user = db.query(_user.User).get(reset_request.user_id)
+        user.password = hash_password
+        db.delete(reset_request)
+        db.commit()
+        return "Password reset successfully."
+    
+    return "Invalid token or token expired"
