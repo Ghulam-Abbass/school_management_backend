@@ -12,7 +12,7 @@ smtp_username = '4a995e1a083b15'
 smtp_password = 'e250b0efe5b93b'
 from_email = 'appriemannsystem@gmail.com'
 
-async def send_reset_password_email(to_email: str, token: str):
+async def send_reset_password_email(to_email: str, code: str):
     subject = "Password Reset"
 
     html_content = f"""
@@ -20,19 +20,71 @@ async def send_reset_password_email(to_email: str, token: str):
     <html>
       <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <style>
+          body {{
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f7f9fc;
+          }}
+          .main {{
+            display: block;
+            margin: auto;
+            max-width: 600px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+          }}
+          h1 {{
+            font-size: 24px;
+            color: #333;
+            text-align: center;
+            margin-bottom: 10px;
+          }}
+          p {{
+            font-size: 16px;
+            color: #555;
+            text-align: center;
+          }}
+          .token-container {{
+            display: flex;
+            justify-content: center; /* Center the token horizontally */
+            margin: 20px 0; /* Add some margin for spacing */
+          }}
+          .token {{
+            background-color: #e0e7ff;
+            color: #1e40af;
+            padding: 15px 25px;
+            font-size: 20px;
+            border-radius: 5px;
+            display: inline-block;
+          }}
+          .footer {{
+            text-align: center;
+            font-size: 14px;
+            color: #888;
+            margin-top: 20px;
+          }}
+        </style>
       </head>
-      <body style="font-family: sans-serif;">
-        <div style="display: block; margin: auto; max-width: 600px;" class="main">
-          <h1 style="font-size: 18px; text-align: center; font-weight: bold; margin-top: 20px">Password Reset</h1>
-          <p style="font-size: 18px; text-align: center;">Here is your password reset token:</p>
-          <div style="text-align: center; margin-top: 50px; margin-bottom:25dp">
-            <p style="background-color: #f0f0f0; color: #333; padding: 10px 20px; font-size: 24px; border-radius: 5px; display: inline-block;">{token}</p>
+      <body>
+        <div class="main">
+          <h1>Password Reset</h1>
+          <p>Here is your password reset Code:</p>
+          <div class="token-container">
+            <div class="token">{code}</div>
           </div>
-          <p style="font-size: 18px; text-align: center;">This token will expire in 1 hour.</p>
+          <p>This token will expire in 1 hour.</p>
+          <div class="footer">
+            <p>If you did not request a password reset, please ignore this email.</p>
+          </div>
         </div>
       </body>
     </html>
     """
+
+
 
     # Create MIME objects
     msg = MIMEMultipart('alternative')

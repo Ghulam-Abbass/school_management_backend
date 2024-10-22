@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 import routes.auth_route as _auth
+import routes.passord_route as _psw
 from fastapi.middleware.cors import CORSMiddleware
 
 
@@ -25,3 +26,4 @@ app.add_middleware(
 )
 
 app.include_router(_auth.auth, tags=["Authentication"])
+app.include_router(_psw.psw, tags=["Forget Password"])
