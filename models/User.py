@@ -21,3 +21,6 @@ class User(Base):
     cover_image = Column(String(255), nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=None, onupdate=datetime.utcnow)
+
+    # One-to-many relationship: one user can have multiple password reset requests
+    password_resets = relationship("PasswordReset", back_populates="user", cascade="all, delete-orphan")
