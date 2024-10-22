@@ -12,6 +12,8 @@ class UserSignin(_UserBase):
     address: Optional[str]
     phone: Optional[str]
     role: str
+    profile_image:  Optional[str]
+    cover_image:  Optional[str]
     created_at: str
     updated_at: Optional[str] = None
 
@@ -30,6 +32,8 @@ class UserSignin(_UserBase):
             address=obj.address,
             phone=obj.phone,
             role=obj.role,
+            profile_image= obj.profile_image,
+            cover_image= obj.cover_image,
             created_at=obj.created_at.isoformat() if obj.created_at else None,
             updated_at=obj.updated_at.isoformat() if obj.updated_at else None
         )  

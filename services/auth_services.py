@@ -100,6 +100,8 @@ async def create_token_login(user: _models.User):
                 "token_type": "Bearer",
                 "expires_in": token_expiration.isoformat(),
                 "role": user.role,
+                "profile_image": user.profile_image,
+                "cover_image": user.cover_image,
                 "created_at": user.created_at,
                 "updated_at": user.updated_at
             }
@@ -123,6 +125,8 @@ async def get_user(token=_fastapi.Depends(auth_scheme), db=_fastapi.Depends(get_
             "address": user.address,
             "phone": user.phone,
             "role": user.role,
+            "profile_image": user.profile_image,
+            "cover_image": user.cover_image,
             "created_at": user.created_at.isoformat() if user.created_at else None,
             "updated_at": user.updated_at.isoformat() if user.updated_at else None
         }
@@ -150,7 +154,9 @@ def update_profile(
     first_name: str, 
     last_name: str, 
     phone: str, 
-    address: str
+    address: str,
+    profile_image_url: str = None,
+    cover_image_url: str = None
 ):
     user = db.query(_models.User).filter(_models.User.id == user_id).first()
 
@@ -166,8 +172,10 @@ def update_profile(
         setattr(user, "phone", phone)
     if address:
         setattr(user, "address", address)
-    # if image_url:
-    #     setattr(user, "image", image_url)
+    if profile_image_url:
+        setattr(user, "profile_image", profile_image_url)
+    if cover_image_url:
+        setattr(user, "cover_image", cover_image_url)
 
     # Set the updated_at timestamp
     setattr(user, "updated_at", datetime.utcnow())
@@ -185,6 +193,8 @@ def update_profile(
         "address": user.address,
         "phone": user.phone,
         "role": user.role,
+        "profile_image": user.profile_image,
+        "cover_image": user.cover_image,
         "created_at": user.created_at.isoformat() if user.created_at else None,
         "updated_at": user.updated_at.isoformat() if user.updated_at else None
     }

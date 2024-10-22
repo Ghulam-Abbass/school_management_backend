@@ -17,5 +17,7 @@ class User(Base):
     address = Column(String(225))
     password = Column(String(225))
     role = Column(String(50))
+    profile_image = Column(String(255), nullable=True)
+    cover_image = Column(String(255), nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=None, onupdate=datetime.utcnow)

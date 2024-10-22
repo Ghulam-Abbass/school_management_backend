@@ -137,13 +137,15 @@ async def show_user_profile(
     return response
 
 
-@auth.post("/api/user/{user_id}")
+@auth.post("/auth/user/{user_id}")
 async def update_user(
     user_id: int,
     first_name: str = _fastapi.Form("", description="Enter first_name"),
     last_name: str = _fastapi.Form("", description="Enter last_name"),
     phone: str = _fastapi.Form("", description="Enter phone"),
     address: str = _fastapi.Form("", description="Enter address"),
+    profile_image: _fastapi.UploadFile = _fastapi.File(..., description="Upload profile image"),
+    cover_image: _fastapi.UploadFile = _fastapi.File(..., description="Upload cover image"),
     auth: User = _fastapi.Depends(_authservices.get_current_user),
     db: Session = _fastapi.Depends(_authservices.get_db)
 ):
@@ -167,11 +169,15 @@ async def update_user(
         return _functions.create_error_response("Unauthorized: Token is invalid")
     
     # Handle image upload if provided
-    # image_url = None
-    # if image:
-    #     image_url = await _functions.upload_image(image)
+    profile_image_url = None
+    if profile_image:
+        profile_image_url = await _functions.upload_image(profile_image)
 
-    updated_user = _authservices.update_profile(db, user_id, first_name, last_name, phone, address)
+    cover_image_url = None
+    if cover_image:
+        cover_image_url = await _functions.upload_image(cover_image)
+
+    updated_user = _authservices.update_profile(db, user_id, first_name, last_name, phone, address, profile_image_url, cover_image_url)
     if updated_user is None:
         response = {
             "success": False,
@@ -195,7 +201,7 @@ async def update_user(
     }
     return response
 
-@auth.post("/api/logout")
+@auth.post("/auth/logout")
 async def user_logout(token: str = _fastapi.Depends(_authservices.auth_scheme)):
     data = await _authservices.logout_user(token)
     if data == "Unauthorized: Token has expired" or data == "Unauthorized: Invalid token":
