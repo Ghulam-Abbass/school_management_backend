@@ -1,6 +1,6 @@
 from fastapi import FastAPI
-import routes.auth_route as _auth
-import routes.passord_route as _psw
+import routes.auth_routes.auth_route as _auth
+import routes.auth_routes.passord_route as _psw
 from fastapi.middleware.cors import CORSMiddleware
 
 

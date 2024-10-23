@@ -1,8 +1,8 @@
-import models.User as _user
+import models.auth_models.User as _user
 import fastapi as _fastapi
 from sqlalchemy.orm import Session
 from datetime import datetime, timedelta
-import models.PasswordReset as _password
+import models.auth_models.PasswordReset as _password
 import passlib.hash as _hash
 from config.smtplib import send_reset_password_email
 import random

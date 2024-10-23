@@ -1,9 +1,9 @@
 import fastapi as _fastapi
-import schema.auth_schema as _authschema
+import schema.auth_schema.auth_schema as _authschema
 from sqlalchemy.orm import Session
-import services.auth_services as _authservices
+import services.auth_services.auth_services as _authservices
 import logging
-from models.User import User
+from models.auth_models.User import User
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 import utils.functions as _functions

@@ -1,7 +1,7 @@
 import db.database as _database
-import models.User as _models
+import models.auth_models.User as _models
 import sqlalchemy.orm as _orm
-import schema.auth_schema as _schemas
+import schema.auth_schema.auth_schema as _schemas
 import fastapi as _fastapi
 import passlib.hash as _hash
 import jwt
