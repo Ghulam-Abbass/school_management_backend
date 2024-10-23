@@ -1,6 +1,6 @@
 from fastapi import FastAPI
-import routes.auth_routes.auth_route as _auth
-import routes.auth_routes.passord_route as _psw
+import routes.auth_route.auth_route as _auth
+import routes.auth_route.passord_route as _psw
 from fastapi.middleware.cors import CORSMiddleware
 
 
@@ -8,12 +8,12 @@ from fastapi.middleware.cors import CORSMiddleware
 app = FastAPI(
         debug=True,
         title= "School Management System",
-        openapi_url="/openapi.json"
+        openapi_url="/school.json"
     )
 
 
 origins = [
-    "http://localhost:8080",
+    "http://localhost:8090",
     "*"
 ]
 

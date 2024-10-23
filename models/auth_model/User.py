@@ -1,5 +1,5 @@
 # models.py
-from sqlalchemy import Column, Integer, String, DateTime
+from sqlalchemy import Column, Integer, String, DateTime, Boolean, Float, Date
 from sqlalchemy_utils import URLType
 from db.database import Base  # Import the Base from the db module
 from datetime import datetime, timedelta
@@ -22,5 +22,16 @@ class User(Base):
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=None, onupdate=datetime.utcnow)
 
-    # One-to-many relationship: one user can have multiple password reset requests
+    cv = Column(String(255), nullable=True)
+    date_of_birth = Column(Date, nullable=True)
+    age = Column(Integer, nullable=True)
+    approved = Column(Boolean, default=False, nullable=True)
+    experience = Column(Float, nullable=True)
+    work_at_place = Column(String(100), nullable=True)
+    education = Column(String(100), nullable=True)
+    degree_year = Column(Integer, nullable=True)
+    skills = Column(String(255), nullable=True)
+    hobby = Column(String(255), nullable=True)
+    gender = Column(String(50), nullable=True)
+
     password_resets = relationship("PasswordReset", back_populates="user", cascade="all, delete-orphan")

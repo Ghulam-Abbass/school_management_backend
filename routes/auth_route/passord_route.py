@@ -1,7 +1,7 @@
 import fastapi as _fastapi
 from sqlalchemy.orm import Session
-import services.auth_services.auth_services as _authservices
-import services.auth_services.password_services as _pwdservices
+import services.auth_service.auth_services as _authservices
+import services.auth_service.password_services as _pwdservices
 import logging
 from fastapi.responses import JSONResponse
 from fastapi import BackgroundTasks
