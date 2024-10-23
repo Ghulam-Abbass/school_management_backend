@@ -19,7 +19,6 @@ class User(Base):
     role = Column(String(50))
     profile_image = Column(String(255), nullable=True)
     cover_image = Column(String(255), nullable=True)
-    token_expiry = Column(DateTime, default=datetime.utcnow() - timedelta(days=1))
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=None, onupdate=datetime.utcnow)
 
