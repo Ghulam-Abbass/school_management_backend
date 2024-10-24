@@ -35,4 +35,5 @@ class User(Base):
     gender = Column(String(50), nullable=True)
     bio = Column(String(500), nullable=True)
 
+    job = relationship("Job", back_populates="user", uselist=False)
     password_resets = relationship("PasswordReset", back_populates="user", cascade="all, delete-orphan")
