@@ -201,6 +201,80 @@ async def update_user(
     }
     return response
 
+
+@auth.post("/auth/teacher/{teacher_id}")
+async def update_teacher_profile(
+    teacher_id: int,
+    first_name: str = _fastapi.Form("", description="Enter first_name"),
+    last_name: str = _fastapi.Form("", description="Enter last_name"),
+    phone: str = _fastapi.Form("", description="Enter phone"),
+    address: str = _fastapi.Form("", description="Enter address"),
+    profile_image: _fastapi.UploadFile = _fastapi.File(None, description="Upload profile image"),
+    cover_image: _fastapi.UploadFile = _fastapi.File(None, description="Upload cover image"),
+    cv_file: _fastapi.UploadFile = _fastapi.File(None, description="Upload CV as a PDF"),
+    date_of_birth: str = _fastapi.Form(None, description="Enter date of birth (YYYY-MM-DD)"),
+    age: int = _fastapi.Form(None, description="Enter age"),
+    experience: float = _fastapi.Form(None, description="Enter experience in years"),
+    work_at_place: str = _fastapi.Form("", description="Enter workplace"),
+    education: str = _fastapi.Form("", description="Enter education"),
+    degree_year: int = _fastapi.Form(None, description="Enter degree year"),
+    skills: str = _fastapi.Form("", description="Enter skills"),
+    hobby: str = _fastapi.Form("", description="Enter hobbies"),
+    gender: str = _fastapi.Form("", description="Enter gender"),
+    auth: User = _fastapi.Depends(_authservices.get_current_user),
+    db: Session = _fastapi.Depends(_authservices.get_db)
+):
+    # Ensure the user has the 'teacher' role
+    if auth.role != "teacher":
+        return _functions.create_error_response("Unauthorized: Only teachers can update their profile")
+    
+    user = await _authservices.get_user_by_id(db, teacher_id)
+    
+    if user is None:
+        response = {
+            "success": False,
+            "message": "User not found",
+            "data": None
+        }
+        return JSONResponse(status_code=404, content=response)
+
+    # Handle image uploads
+    profile_image_url = None
+    if profile_image:
+        profile_image_url = await _functions.upload_image(profile_image)
+
+    cover_image_url = None
+    if cover_image:
+        cover_image_url = await _functions.upload_image(cover_image)
+
+    # Handle CV upload (only accept PDF files)
+    cv_file_url = None
+    if cv_file and cv_file.content_type == "application/pdf":
+        cv_file_url = await _functions.upload_file(cv_file, file_type="cv")
+
+    # Update user profile
+    updated_user = _authservices.update_teacher_profile(
+        db, teacher_id, first_name, last_name, phone, address, profile_image_url, cover_image_url,
+        cv_file_url, date_of_birth, age, experience, work_at_place, education, degree_year, skills, hobby, gender
+    )
+    
+    if updated_user is None:
+        response = {
+            "success": False,
+            "message": "Something went wrong.",
+            "data": None
+        }
+        return JSONResponse(status_code=404, content=response)
+
+    response = {
+        "success": True,
+        "message": "User updated.",
+        "data": updated_user
+    }
+    return response
+
+
+
 @auth.post("/auth/logout")
 async def user_logout(token: str = _fastapi.Depends(_authservices.auth_scheme)):
     data = await _authservices.logout_user(token)

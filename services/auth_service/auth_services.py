@@ -201,6 +201,98 @@ def update_profile(
     
     return user_data
 
+def update_teacher_profile(
+    db: Session, 
+    user_id: int, 
+    first_name: str, 
+    last_name: str, 
+    phone: str, 
+    address: str,
+    profile_image_url: str = None,
+    cover_image_url: str = None,
+    cv_file_url: str = None,
+    date_of_birth: str = None,
+    age: int = None,
+    experience: float = None,
+    work_at_place: str = None,
+    education: str = None,
+    degree_year: int = None,
+    skills: str = None,
+    hobby: str = None,
+    gender: str = None
+):
+    user = db.query(_models.User).filter(_models.User.id == user_id).first()
+
+    if user is None:
+        return None
+
+    # Update the base fields
+    if first_name:
+        setattr(user, "first_name", first_name)
+    if last_name:
+        setattr(user, "last_name", last_name)
+    if phone:
+        setattr(user, "phone", phone)
+    if address:
+        setattr(user, "address", address)
+    if profile_image_url:
+        setattr(user, "profile_image", profile_image_url)
+    if cover_image_url:
+        setattr(user, "cover_image", cover_image_url)
+
+    if cv_file_url:
+        setattr(user, "cv", cv_file_url)
+    if date_of_birth:
+        setattr(user, "date_of_birth", date_of_birth)
+    if age:
+        setattr(user, "age", age)
+    if experience:
+        setattr(user, "experience", experience)
+    if work_at_place:
+        setattr(user, "work_at_place", work_at_place)
+    if education:
+        setattr(user, "education", education)
+    if degree_year:
+        setattr(user, "degree_year", degree_year)
+    if skills:
+        setattr(user, "skills", skills)
+    if hobby:
+        setattr(user, "hobby", hobby)
+    if gender:
+        setattr(user, "gender", gender)
+
+    setattr(user, "updated_at", datetime.utcnow())
+
+    db.commit()
+    db.refresh(user)
+
+    user_data = {
+        "id": user.id,
+        "first_name": user.first_name,
+        "last_name": user.last_name,
+        "email": user.email,
+        "address": user.address,
+        "phone": user.phone,
+        "role": user.role,
+        "profile_image": user.profile_image,
+        "cover_image": user.cover_image,
+        "cv": user.cv,
+        "date_of_birth": user.date_of_birth.isoformat() if user.date_of_birth else None,
+        "age": user.age,
+        "approved": user.approved,
+        "experience": user.experience,
+        "work_at_place": user.work_at_place,
+        "education": user.education,
+        "degree_year": user.degree_year,
+        "skills": user.skills,
+        "hobby": user.hobby,
+        "gender": user.gender,
+        "created_at": user.created_at.isoformat() if user.created_at else None,
+        "updated_at": user.updated_at.isoformat() if user.updated_at else None
+    }
+    
+    return user_data
+
 
 async def get_current_user(token=_fastapi.Depends(auth_scheme), db=_fastapi.Depends(get_db)):
     try:
@@ -213,7 +305,7 @@ async def get_current_user(token=_fastapi.Depends(auth_scheme), db=_fastapi.Depe
     except jwt.ExpiredSignatureError:
         return "Unauthorized: Token has expired"
     except jwt.InvalidTokenError:
-        return "Unauthorized: Token is invalid"
+        return "Unauthorized: Token is invalid"  
     
 
 async def logout_user(token: str):
