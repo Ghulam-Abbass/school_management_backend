@@ -8,8 +8,8 @@ from db.database import Base
 class Job(Base):
     __tablename__ = 'job_table'
 
-    job_id = Column(Integer, primary_key=True, index=True)
-    job_name = Column(String(100), unique=True, index=True)
+    id = Column(Integer, primary_key=True, index=True)
+    job_name = Column(String(100))
     user_id = Column(Integer, ForeignKey('user_table.id'))
 
     # Define the one-to-one relationship

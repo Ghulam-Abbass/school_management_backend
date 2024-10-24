@@ -227,7 +227,7 @@ async def update_teacher_profile(
 ):
     # Ensure the user has the 'teacher' role
     if auth.role != "teacher":
-        return _functions.create_error_response("Unauthorized: Only teachers can update their profile")
+        return _functions.create_error_response("Only teachers can update their profile")
     
     user = await _authservices.get_user_by_id(db, teacher_id)
     
