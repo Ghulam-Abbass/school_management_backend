@@ -33,5 +33,6 @@ class User(Base):
     skills = Column(String(255), nullable=True)
     hobby = Column(String(255), nullable=True)
     gender = Column(String(50), nullable=True)
+    bio = Column(String(500), nullable=True)
 
     password_resets = relationship("PasswordReset", back_populates="user", cascade="all, delete-orphan")

@@ -209,6 +209,7 @@ async def update_teacher_profile(
     last_name: str = _fastapi.Form("", description="Enter last_name"),
     phone: str = _fastapi.Form("", description="Enter phone"),
     address: str = _fastapi.Form("", description="Enter address"),
+    bio: str = _fastapi.Form("", description="Enter bio"),
     profile_image: _fastapi.UploadFile = _fastapi.File(None, description="Upload profile image"),
     cover_image: _fastapi.UploadFile = _fastapi.File(None, description="Upload cover image"),
     cv_file: _fastapi.UploadFile = _fastapi.File(None, description="Upload CV as a PDF"),
@@ -254,7 +255,7 @@ async def update_teacher_profile(
 
     # Update user profile
     updated_user = _authservices.update_teacher_profile(
-        db, teacher_id, first_name, last_name, phone, address, profile_image_url, cover_image_url,
+        db, teacher_id, first_name, last_name, phone, address, bio, profile_image_url, cover_image_url,
         cv_file_url, date_of_birth, age, experience, work_at_place, education, degree_year, skills, hobby, gender
     )
     
@@ -272,7 +273,6 @@ async def update_teacher_profile(
         "data": updated_user
     }
     return response
-
 
 
 @auth.post("/auth/logout")

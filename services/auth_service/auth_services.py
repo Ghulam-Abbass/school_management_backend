@@ -94,6 +94,7 @@ async def create_token_login(user: _models.User):
                 "first_name": user.first_name,
                 "last_name": user.last_name,
                 "email": user.email,
+                "bio": user.bio,
                 "address": user.address,
                 "phone": user.phone,
                 "access_token": token,
@@ -102,6 +103,17 @@ async def create_token_login(user: _models.User):
                 "role": user.role,
                 "profile_image": user.profile_image,
                 "cover_image": user.cover_image,
+                "cv": user.cv,
+                "date_of_birth": user.date_of_birth.isoformat() if user.date_of_birth else None,
+                "age": user.age,
+                "approved": user.approved,
+                "experience": user.experience,
+                "work_at_place": user.work_at_place,
+                "education": user.education,
+                "degree_year": user.degree_year,
+                "skills": user.skills,
+                "hobby": user.hobby,
+                "gender": user.gender,
                 "created_at": user.created_at,
                 "updated_at": user.updated_at
             }
@@ -122,11 +134,23 @@ async def get_user(token=_fastapi.Depends(auth_scheme), db=_fastapi.Depends(get_
             "first_name": user.first_name,
             "last_name": user.last_name,
             "email": user.email,
+            "bio": user.bio,
             "address": user.address,
             "phone": user.phone,
             "role": user.role,
             "profile_image": user.profile_image,
             "cover_image": user.cover_image,
+            "cv": user.cv,
+            "date_of_birth": user.date_of_birth.isoformat() if user.date_of_birth else None,
+            "age": user.age,
+            "approved": user.approved,
+            "experience": user.experience,
+            "work_at_place": user.work_at_place,
+            "education": user.education,
+            "degree_year": user.degree_year,
+            "skills": user.skills,
+            "hobby": user.hobby,
+            "gender": user.gender,
             "created_at": user.created_at.isoformat() if user.created_at else None,
             "updated_at": user.updated_at.isoformat() if user.updated_at else None
         }
@@ -190,11 +214,23 @@ def update_profile(
         "first_name": user.first_name,
         "last_name": user.last_name,
         "email": user.email,
+        "bio": user.bio,
         "address": user.address,
         "phone": user.phone,
         "role": user.role,
         "profile_image": user.profile_image,
         "cover_image": user.cover_image,
+        "cv": user.cv,
+        "date_of_birth": user.date_of_birth.isoformat() if user.date_of_birth else None,
+        "age": user.age,
+        "approved": user.approved,
+        "experience": user.experience,
+        "work_at_place": user.work_at_place,
+        "education": user.education,
+        "degree_year": user.degree_year,
+        "skills": user.skills,
+        "hobby": user.hobby,
+        "gender": user.gender,
         "created_at": user.created_at.isoformat() if user.created_at else None,
         "updated_at": user.updated_at.isoformat() if user.updated_at else None
     }
@@ -208,6 +244,7 @@ def update_teacher_profile(
     last_name: str, 
     phone: str, 
     address: str,
+    bio: str,
     profile_image_url: str = None,
     cover_image_url: str = None,
     cv_file_url: str = None,
@@ -246,6 +283,8 @@ def update_teacher_profile(
         setattr(user, "date_of_birth", date_of_birth)
     if age:
         setattr(user, "age", age)
+    if bio:
+        setattr(user, "bio", bio)
     if experience:
         setattr(user, "experience", experience)
     if work_at_place:
@@ -271,6 +310,7 @@ def update_teacher_profile(
         "first_name": user.first_name,
         "last_name": user.last_name,
         "email": user.email,
+        "bio": user.bio,
         "address": user.address,
         "phone": user.phone,
         "role": user.role,
