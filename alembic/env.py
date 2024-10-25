@@ -10,6 +10,7 @@ from alembic import context
 from models.auth_model.User import *
 from models.auth_model.PasswordReset import *
 from models.job_model.Job import *
+from models.children_model.Child import *
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.

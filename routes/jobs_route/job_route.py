@@ -106,10 +106,3 @@ async def decline_application(
     await _email.send_teacher_email(user.email, "Sorry 😔", "We regret to inform you that your job application has been declined. Please try again later.")
     
     return "Application declined successfully."
-
-
-
-
-@job.get("/api/staff/job")
-async def create_staff_job():
-    return "Get jobs"
