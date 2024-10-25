@@ -26,6 +26,7 @@ class User(Base):
     date_of_birth = Column(Date, nullable=True)
     age = Column(Integer, nullable=True)
     approved = Column(Boolean, default=False, nullable=True)
+    apply = Column(Boolean, default=False, nullable=True)
     experience = Column(Float, nullable=True)
     work_at_place = Column(String(100), nullable=True)
     education = Column(String(100), nullable=True)
