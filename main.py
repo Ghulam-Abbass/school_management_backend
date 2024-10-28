@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 import routes.auth_route.auth_route as _auth
 import routes.auth_route.passord_route as _psw
+import routes.child_route.children_route as _child
 import routes.jobs_route.job_route as _job
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -29,3 +30,4 @@ app.add_middleware(
 app.include_router(_auth.auth, tags=["Authentication"])
 app.include_router(_psw.psw, tags=["Forget Password"])
 app.include_router(_job.job, tags=["Apply Job"])
+app.include_router(_child.child, tags=["Add Child"])
