@@ -38,3 +38,4 @@ class User(Base):
 
     job = relationship("Job", back_populates="user", uselist=False)
     password_resets = relationship("PasswordReset", back_populates="user", cascade="all, delete-orphan")
+    childrens = relationship("Child", back_populates="user", cascade="all, delete-orphan")

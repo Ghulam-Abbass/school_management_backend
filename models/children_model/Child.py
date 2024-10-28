@@ -1,5 +1,5 @@
 # models.py
-from sqlalchemy import Column, Integer, String, DateTime, Boolean, Float, Date
+from sqlalchemy import Column, Integer, String, DateTime, Boolean, Float, Date, ForeignKey
 from sqlalchemy_utils import URLType
 from db.database import Base  # Import the Base from the db module
 from datetime import datetime, timedelta
@@ -29,3 +29,7 @@ class Child(Base):
     hafiz = Column(Boolean, default=False, nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=None, onupdate=datetime.utcnow)
+
+    parent_id = Column(Integer, ForeignKey('user_table.id'), nullable=False)
+
+    user = relationship("User", back_populates="childrens")
